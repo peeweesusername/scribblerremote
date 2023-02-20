@@ -26,6 +26,7 @@ class ScribblerComms {
   }
 
   Future<String> readModuleName (String ipAddress) async {
+    //HTTP read from http://ipAddress/wx/setting?name=module-name
     String modeName;
     try {
       modeName =  await http.read(Uri.http(ipAddress, '/wx/setting', {'name' : 'module-name'}));
@@ -45,8 +46,6 @@ class ScribblerComms {
     //This does not complete synchronously, onDone is hit before scribbler is found
     final stream = HostScanner.scanDevicesForSinglePort(subnet!, 80, firstHostId: 1, lastHostId: 255);
     stream.listen((host)  async {
-      //Same host can be emitted multiple times
-      //Use Set<ActiveHost> instead of List<ActiveHost>
       var ip2Test = host.internetAddress.address.toString();
       var moduleName = await readModuleName(ip2Test);
       if (moduleName != 'notAScribbler') {
@@ -56,7 +55,7 @@ class ScribblerComms {
         }
       },
         onDone: () {
-      }); // Don't forget to cancel the stream when not in use.
+      });
   }
 
   bool notConnected() {
@@ -69,6 +68,18 @@ class ScribblerComms {
 
   void forward () {
     _tcpSocket.add(utf8.encode('F'));
+  }
+
+  void reverse () {
+    _tcpSocket.add(utf8.encode('R'));
+  }
+
+  void left () {
+    _tcpSocket.add(utf8.encode('l'));
+  }
+
+  void right () {
+    _tcpSocket.add(utf8.encode('r'));
   }
 
   void stop () {
