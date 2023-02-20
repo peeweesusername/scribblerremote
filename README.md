@@ -1,6 +1,6 @@
 # scribblerremote
 
-Remote control for Scribbler 3
+Remote control for Scribbler 3 over TCP
 
 https://www.parallax.com/product/scribbler-3-s3-robot/
 
