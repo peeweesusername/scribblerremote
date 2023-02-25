@@ -36,7 +36,8 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   bool _scribblerIsConnected = false;
   final List<Scribbler> _scribblers = [];
   late RCPanel myRCpanel;
-  late ScannerPanel myScannerPanel;
+  //late ScannerPanel myScannerPanel;
+  //late StatefulScannerPanel mySFScannerPanel;
 
   void _doScan() {
     print('scanning');
@@ -57,7 +58,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
     print('called back - connected to scribbler');
     setState(() {
       _scribblerIsConnected = true;
-      myScannerPanel.isConnected = true;
+      //myScannerPanel.isConnected = true;
     });
   }
 
@@ -123,10 +124,6 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
       _reverse,
       _beep,
     );
-    myScannerPanel = ScannerPanel(
-        _doScan,
-        _scribblerIsConnected
-    );
   }
 
   @override
@@ -139,7 +136,11 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            myScannerPanel,
+            //myScannerPanel,
+            StatefulScannerPanel(
+                doScan: _doScan,
+                isConnected: _scribblerIsConnected
+            ),
             myRCpanel,
           ],
         ),
@@ -148,6 +149,35 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   }
 }
 
+class StatefulScannerPanel extends StatefulWidget {
+  final VoidCallback doScan;
+  final bool isConnected;
+  const StatefulScannerPanel({
+    super.key,
+    required this.doScan,
+    required this.isConnected});
+
+  @override
+  State<StatefulScannerPanel> createState() => _StatefulScannerPanel();
+}
+
+class _StatefulScannerPanel extends State<StatefulScannerPanel> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        widget.isConnected ? const Text('connected') : const Text('not connected'),
+        FloatingActionButton(
+          onPressed: widget.doScan,
+          tooltip: 'Scan',
+          child: const Icon(Icons.search),
+        ),
+      ],);
+  }
+}
+/*
 class ScannerPanel extends StatelessWidget {
   final VoidCallback doScan;
   bool isConnected;
@@ -168,7 +198,8 @@ class ScannerPanel extends StatelessWidget {
       ],);
   }
 }
-  
+*/
+
 class RCPanel extends StatelessWidget {
   final VoidCallback forward;
   final VoidCallback left;
@@ -234,3 +265,4 @@ class RCPanel extends StatelessWidget {
     );
   }
 }
+
