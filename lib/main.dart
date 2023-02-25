@@ -35,11 +35,13 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   bool _scribblerIsFound = false;
   bool _scribblerIsConnected = false;
   final List<Scribbler> _scribblers = [];
+  late RCPanel myRCpanel;
+  late ScannerPanel myScannerPanel;
 
   void _doScan() {
     print('scanning');
     _scribblerIsFound = false;
-    _scribblerScanner = ScribblerScanner(foundScribbler);
+    _scribblerScanner = ScribblerScanner(foundScribbler, connected2Scribbler);
     _scribblerScanner.scanForFirstScribbler();
     _scribblerScanner.scanForScribblers(_scribblers);
   }
@@ -48,6 +50,14 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
     print('called back - found scribbler');
     setState(() {
       _scribblerIsFound = true;
+    });
+  }
+
+  void connected2Scribbler() {
+    print('called back - connected to scribbler');
+    setState(() {
+      _scribblerIsConnected = true;
+      myScannerPanel.isConnected = true;
     });
   }
 
@@ -105,6 +115,18 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   @override
   void initState()  {
     super.initState();
+    myRCpanel = RCPanel(
+      _forward,
+      _left,
+      _right,
+      _stop,
+      _reverse,
+      _beep,
+    );
+    myScannerPanel = ScannerPanel(
+        _doScan,
+        _scribblerIsConnected
+    );
   }
 
   @override
@@ -117,52 +139,8 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FloatingActionButton(
-              onPressed: _doScan,
-              tooltip: 'Scan',
-              child: const Icon(Icons.search),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FloatingActionButton(
-                  onPressed: _forward,
-                  tooltip: 'Forward',
-                  child: const Icon(Icons.arrow_upward),
-                ),
-              ]
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FloatingActionButton(
-                    onPressed: _left,
-                    tooltip: 'Left',
-                    child: const Icon(Icons.arrow_back),
-                  ),
-                  FloatingActionButton(
-                    onPressed: _stop,
-                    tooltip: 'Stop',
-                    child: const Icon(Icons.stop_circle),
-                  ),
-                  FloatingActionButton(
-                    onPressed: _right,
-                    tooltip: 'Right',
-                    child: const Icon(Icons.arrow_forward),
-                  ),
-                ]
-            ),
-            FloatingActionButton(
-              onPressed: _reverse,
-              tooltip: 'Reverse',
-              child: const Icon(Icons.arrow_downward),
-            ),
-            FloatingActionButton(
-              onPressed: _beep,
-              tooltip: 'Beep',
-              child: const Icon(Icons.music_note),
-            ),
-            _scribblerIsConnected? const Text('connected') : const Text('not connected')
+            myScannerPanel,
+            myRCpanel,
           ],
         ),
       ),
@@ -170,3 +148,89 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   }
 }
 
+class ScannerPanel extends StatelessWidget {
+  final VoidCallback doScan;
+  bool isConnected;
+
+  ScannerPanel(this.doScan, this.isConnected, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        isConnected ? const Text('connected') : const Text('not connected'),
+        FloatingActionButton(
+          onPressed: doScan,
+          tooltip: 'Scan',
+          child: const Icon(Icons.search),
+        ),
+      ],);
+  }
+}
+  
+class RCPanel extends StatelessWidget {
+  final VoidCallback forward;
+  final VoidCallback left;
+  final VoidCallback right;
+  final VoidCallback stop;
+  final VoidCallback reverse;
+  final VoidCallback beep;
+  const RCPanel(
+      this.forward,
+      this.left,
+      this.right,
+      this.stop,
+      this.reverse,
+      this.beep,
+      {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FloatingActionButton(
+              onPressed: forward,
+              tooltip: 'Forward',
+              child: const Icon(Icons.arrow_upward),
+            ),
+          ]
+        ),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: left,
+                tooltip: 'Left',
+                child: const Icon(Icons.arrow_back),
+              ),
+              FloatingActionButton(
+                onPressed: stop,
+                tooltip: 'Stop',
+                child: const Icon(Icons.stop_circle),
+              ),
+              FloatingActionButton(
+                onPressed: right,
+                tooltip: 'Right',
+                child: const Icon(Icons.arrow_forward),
+              ),
+            ]
+        ),
+        FloatingActionButton(
+          onPressed: reverse,
+          tooltip: 'Reverse',
+          child: const Icon(Icons.arrow_downward),
+        ),
+        FloatingActionButton(
+          onPressed: beep,
+          tooltip: 'Beep',
+          child: const Icon(Icons.music_note),
+        ),
+      ],
+    );
+  }
+}

@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart' as netinfo;
 import 'package:network_tools/network_tools.dart';
 
 class Scribbler {
-  late String _name;
-  late String _ipAddress;
+  late final String _name;
+  late final String _ipAddress;
   late Socket _tcpSocket;
   bool _notConnected = true;
   Scribbler (this._name, this._ipAddress);
@@ -57,8 +58,9 @@ class Scribbler {
 }
 
 class ScribblerScanner {
-  Function foundScribbler;
-  ScribblerScanner(this.foundScribbler);
+  VoidCallback foundScribbler;
+  VoidCallback connected2Scribbler;
+  ScribblerScanner(this.foundScribbler, this.connected2Scribbler);
 
   late Socket _tcpSocket;
   bool _socketNotConnected = true;
@@ -69,6 +71,7 @@ class ScribblerScanner {
     if (_socketNotConnected) {
       _tcpSocket = await Socket.connect(ipAddress, 23);
       _socketNotConnected = false;
+      connected2Scribbler();
     }
   }
 
@@ -76,6 +79,7 @@ class ScribblerScanner {
     if ((_socketNotConnected) && (_scribblerFound)) {
       _tcpSocket = await Socket.connect(_scribblerIP, 23);
       _socketNotConnected = false;
+      connected2Scribbler();
     }
   }
 
