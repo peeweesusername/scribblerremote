@@ -5,7 +5,61 @@ import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart' as netinfo;
 import 'package:network_tools/network_tools.dart';
 
-class ScribblerComms {
+class Scribbler {
+  late String _name;
+  late String _ipAddress;
+  late Socket _tcpSocket;
+  bool _notConnected = true;
+  Scribbler (this._name, this._ipAddress);
+
+  Future<void> openConnection () async {
+    if (_notConnected) {
+      _tcpSocket = await Socket.connect(_ipAddress, 23);
+      _notConnected = false;
+    }
+  }
+
+  String get name {
+    return _name;
+  }
+
+  String get ip {
+    return _ipAddress;
+  }
+
+  bool get notConnected {
+    return _notConnected;
+  }
+
+  void beep () {
+    _tcpSocket.add(utf8.encode('B'));
+  }
+
+  void forward () {
+    _tcpSocket.add(utf8.encode('F'));
+  }
+
+  void reverse () {
+    _tcpSocket.add(utf8.encode('R'));
+  }
+
+  void left () {
+    _tcpSocket.add(utf8.encode('l'));
+  }
+
+  void right () {
+    _tcpSocket.add(utf8.encode('r'));
+  }
+
+  void stop () {
+    _tcpSocket.add(utf8.encode('S'));
+  }
+}
+
+class ScribblerScanner {
+  Function foundScribbler;
+  ScribblerScanner(this.foundScribbler);
+
   late Socket _tcpSocket;
   bool _socketNotConnected = true;
   bool _scribblerFound = false;
@@ -56,6 +110,29 @@ class ScribblerComms {
       },
         onDone: () {
       });
+  }
+
+  Future<void> scanForScribblers (List<Scribbler> scribblers) async {
+    final myNetInfo = netinfo.NetworkInfo();
+    var myIP = await myNetInfo.getWifiIP();
+
+    late String? subnet = myIP?.substring(0, myIP.lastIndexOf('.'));
+
+    //This does not complete synchronously, onDone is hit before scribbler is found
+    final stream = HostScanner.scanDevicesForSinglePort(subnet!, 80, firstHostId: 1, lastHostId: 255);
+
+    stream.listen((host)  async {
+      var ip2Test = host.internetAddress.address.toString();
+      var moduleName = await readModuleName(ip2Test);
+      if (moduleName != 'notAScribbler') {
+        scribblers.add(Scribbler(moduleName,ip2Test));
+        foundScribbler();
+        print('found $moduleName $ip2Test');
+      }
+    },
+
+    onDone: () {
+    });
   }
 
   bool notConnected() {
