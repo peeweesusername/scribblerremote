@@ -44,7 +44,6 @@ class Scribbler {
 
   void disconnect() {
     _tcpSocket.flush();
-    _tcpSocket.close();
     _tcpSocket.destroy();
     _notConnected = true;
   }
@@ -107,6 +106,26 @@ class ScribblerScanner {
       var moduleName = await readModuleName(ip2Test);
       if (moduleName != 'notAScribbler') {
         scribblers.add(Scribbler(moduleName, ip2Test));
+        //Uncomment to test scrollable selection menu
+        /*
+        scribblers.add(Scribbler('fake 1', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 2', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 3', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 4', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 5', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 7', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 8', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 9', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 10', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 11', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 13', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 14', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 15', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 16', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 17', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 18', '127.0.0.1'));
+        scribblers.add(Scribbler('fake 19', '127.0.0.1'));
+        */
         foundScribbler();
       }
     },

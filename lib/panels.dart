@@ -75,15 +75,11 @@ class SelectionMenuPanel extends StatelessWidget {
   Widget build(BuildContext context) {
 
     for (var robot in scribblers) {
-      int i = 0;
-      _menuItems.add(PopupMenuItem(value: i++, child: Text(robot.name)));
+      _menuItems.add(PopupMenuItem(value: _menuItems.length, child: Text(robot.name)));
     }
-
-    //TODO - center menu items, make scrollable,
 
     return PopupMenuButton(
       onSelected: (value) {
-        print ('selected ${scribblers[value].name}');
         scribblers[value].openConnection(connected2Scribbler);
       },
       itemBuilder:  (BuildContext context) {
