@@ -68,7 +68,10 @@ class Scribbler {
 
 class ScribblerScanner {
   VoidCallback foundScribbler;
-  ScribblerScanner(this.foundScribbler);
+  VoidCallback doneScanning;
+  ScribblerScanner({
+    required this.foundScribbler,
+    required this.doneScanning});
 
   Future<String> readModuleName (String ipAddress) async {
     //HTTP read from http://ipAddress/wx/setting?name=module-name
@@ -102,6 +105,7 @@ class ScribblerScanner {
     },
 
     onDone: () {
+      doneScanning();
     });
   }
 

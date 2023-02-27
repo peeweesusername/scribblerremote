@@ -33,12 +33,13 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
 
   bool _scribblerIsFound = false;
   bool _scribblerIsConnected = false;
+  bool _scanningForScribblers = false;
   final List<Scribbler> _scribblers = [];
   late RCPanel _myRCpanel;
   late ScribblerScanner _scribblerScanner;
   late Scribbler _connectedScribbler;
 
-  void foundScribbler() {
+  void _foundScribbler() {
     print('called back - found scribbler');
     for (var robot in _scribblers) {
       print('${robot.name} @ ${robot.ip}');
@@ -48,11 +49,17 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
     });
   }
 
-  void connected2Scribbler(Scribbler scribbler) {
+  void _connected2Scribbler(Scribbler scribbler) {
     print('called back - connected to scribbler');
     setState(() {
       _scribblerIsConnected = true;
       _connectedScribbler = scribbler;
+    });
+  }
+
+  void _scanningDone() {
+    setState(() {
+      _scanningForScribblers = false;
     });
   }
 
@@ -65,6 +72,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
     setState(() {
       _scribblerIsFound = false;
       _scribblerIsConnected = false;
+      _scanningForScribblers = true;
     });
     _scribblerScanner.scanForScribblers(_scribblers);
   }
@@ -96,7 +104,9 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   @override
   void initState()  {
     super.initState();
-    _scribblerScanner = ScribblerScanner(foundScribbler);
+    _scribblerScanner = ScribblerScanner(
+        foundScribbler: _foundScribbler,
+        doneScanning: _scanningDone);
     _myRCpanel = RCPanel(
       _forward,
       _left,
@@ -123,7 +133,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
             ),
             (_scribblerIsFound && !_scribblerIsConnected) ? SelectPanel(
               scribblers: _scribblers,
-              connected2Scribbler: connected2Scribbler,
+              connected2Scribbler: _connected2Scribbler,
             ) : Container(),
             _scribblerIsConnected ? _myRCpanel : Container(),
           ],
