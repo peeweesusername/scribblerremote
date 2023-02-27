@@ -85,7 +85,31 @@ class SelectionMenuPanel extends StatelessWidget {
       itemBuilder:  (BuildContext context) {
         return _menuItems;
       },
-      child: const Text('Tap To Select Robot'),
+      /*
+    icon: Center (
+        child: Container(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: const ShapeDecoration(
+              color: Colors.green,
+              shape: StadiumBorder(
+                side: BorderSide(color: Colors.white, width: 2),
+              )
+          ),
+          child: const Text('Tap To Select Robot'),
+        )),
+        */
+      child: Container(
+          decoration: const ShapeDecoration(
+              color: Colors.green,
+              shape: StadiumBorder(
+                //side: BorderSide(color: Colors.white, width: 2),
+              )
+          ),
+          child: const Text(
+              'Tap To Select Robot',
+              style: TextStyle(color: Colors.white)),
+      )
     );
   }
 }
