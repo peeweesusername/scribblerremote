@@ -79,7 +79,8 @@ class SelectionMenuPanel extends StatelessWidget {
       _menuItems.add(PopupMenuItem(value: i++, child: Text(robot.name)));
     }
 
-    //TODO - center menu items, make scrollable
+    //TODO - center menu items, make scrollable,
+    // change hamburger buttons to text "Tap To Select Robot"
 
     return PopupMenuButton(
       onSelected: (value) {
