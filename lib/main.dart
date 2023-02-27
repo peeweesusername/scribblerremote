@@ -34,10 +34,10 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   bool _scribblerIsFound = false;
   bool _scribblerIsConnected = false;
   bool _scanningForScribblers = false;
-  final List<Scribbler> _scribblers = [];
+  Scribbler _connectedScribbler = Scribbler('NotConnected', '127.0.0.1');
   late RCPanel _myRCpanel;
   late ScribblerScanner _scribblerScanner;
-  late Scribbler _connectedScribbler;
+  final List<Scribbler> _scribblers = [];
 
   void _foundScribbler() {
     print('called back - found scribbler');
@@ -127,9 +127,13 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _scribblerIsConnected ? Text('connected to ${_connectedScribbler.name}') : const Text('not connected'),
+            StatusPanel(
+                isConnected: _scribblerIsConnected,
+                isScanning: _scanningForScribblers,
+                scribblerName: _connectedScribbler.name),
             ScannerPanel(
-                doScan: _doScan,
+              doScan: _doScan,
+              isScanning: _scanningForScribblers,
             ),
             (_scribblerIsFound && !_scribblerIsConnected) ? SelectPanel(
               scribblers: _scribblers,

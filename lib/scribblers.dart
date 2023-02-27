@@ -26,8 +26,16 @@ class Scribbler {
     return _name;
   }
 
+  set name(String str) {
+    _name = str;
+  }
+
   String get ip {
     return _ipAddress;
+  }
+
+  set ip (String addr) {
+    _ipAddress = addr;
   }
 
   bool get notConnected {

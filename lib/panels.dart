@@ -1,24 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:scribblerremote/scribblers.dart';
 
-class ScannerPanel extends StatelessWidget {
-  final VoidCallback doScan;
+class StatusPanel extends StatelessWidget {
+  final bool isConnected;
+  final bool isScanning;
+  final String scribblerName;
 
-  const ScannerPanel({
+  const StatusPanel({
     super.key,
-    required this.doScan});
+    required this.isConnected,
+    required this.isScanning,
+    required this.scribblerName});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FloatingActionButton.extended(
-          onPressed: doScan,
-          tooltip: 'Scan',
-          label: const Text('Search For Scribblers'),
-        ),
-      ],);
+    if (isScanning){
+      return const Text('Scanning...');
+    }
+    else {
+      return isConnected ? Text('connected to $scribblerName') : const Text('not connected');
+    }
+  }
+}
+
+class ScannerPanel extends StatelessWidget {
+  final VoidCallback doScan;
+  final bool isScanning;
+
+  const ScannerPanel({
+    super.key,
+    required this.doScan,
+    required this.isScanning});
+
+  @override
+  Widget build(BuildContext context) {
+    if (isScanning){
+      return SpinKitFadingCircle(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: index.isEven ? Colors.blue : Colors.green,
+            ),
+          );
+        },
+      );
+    }
+    else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FloatingActionButton.extended(
+            onPressed: doScan,
+            tooltip: 'Scan',
+            label: const Text('Search For Scribblers'),
+          ),
+        ],);
+    }
   }
 }
 
