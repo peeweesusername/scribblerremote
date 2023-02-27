@@ -19,7 +19,7 @@ class StatusPanel extends StatelessWidget {
       return const Text('Scanning...');
     }
     else {
-      return isConnected ? Text('connected to $scribblerName') : const Text('not connected');
+      return isConnected ? Text('Connected To $scribblerName') : const Text('Not Connected');
     }
   }
 }
@@ -53,7 +53,7 @@ class ScannerPanel extends StatelessWidget {
           FloatingActionButton.extended(
             onPressed: doScan,
             tooltip: 'Scan',
-            label: const Text('Search For Scribblers'),
+            label: const Text('Scan For Scribblers'),
           ),
         ],);
     }

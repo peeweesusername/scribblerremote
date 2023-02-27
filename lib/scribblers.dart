@@ -108,7 +108,6 @@ class ScribblerScanner {
       if (moduleName != 'notAScribbler') {
         scribblers.add(Scribbler(moduleName, ip2Test));
         foundScribbler();
-        print('found $moduleName $ip2Test');
       }
     },
 

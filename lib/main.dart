@@ -40,7 +40,6 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   final List<Scribbler> _scribblers = [];
 
   void _foundScribbler() {
-    print('called back - found scribbler');
     for (var robot in _scribblers) {
       print('${robot.name} @ ${robot.ip}');
     }
@@ -64,7 +63,6 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   }
 
   void _doScan() {
-    print('scanning');
     if (_scribblerIsConnected) {
       _connectedScribbler.disconnect();
     }
