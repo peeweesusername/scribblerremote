@@ -133,7 +133,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
               doScan: _doScan,
               isScanning: _scanningForScribblers,
             ),
-            (_scribblerIsFound && !_scribblerIsConnected) ? SelectPanel(
+            (_scribblerIsFound && !_scribblerIsConnected) ? SelectionMenuPanel(
               scribblers: _scribblers,
               connected2Scribbler: _connected2Scribbler,
             ) : Container(),

@@ -60,21 +60,35 @@ class ScannerPanel extends StatelessWidget {
   }
 }
 
-class SelectPanel extends StatelessWidget {
+class SelectionMenuPanel extends StatelessWidget {
   final List<Scribbler> scribblers;
   final Function connected2Scribbler;
 
-  const SelectPanel({
+  SelectionMenuPanel({
     super.key,
     required this.scribblers,
     required this.connected2Scribbler});
 
-  //TODO: make this a scrollable selectable menu
+  final List<PopupMenuItem> _menuItems = [];
+
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => scribblers[0].openConnection(connected2Scribbler),
-      label: Text('Connect to ${scribblers[0].name}'),
+
+    for (var robot in scribblers) {
+      int i = 0;
+      _menuItems.add(PopupMenuItem(value: i++, child: Text(robot.name)));
+    }
+
+    //TODO - center menu items, make scrollable
+
+    return PopupMenuButton(
+      onSelected: (value) {
+        print ('selected ${scribblers[value].name}');
+        scribblers[value].openConnection(connected2Scribbler);
+      },
+      itemBuilder:  (BuildContext context) {
+        return _menuItems;
+      },
     );
   }
 }
