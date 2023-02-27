@@ -3,11 +3,11 @@ import 'package:scribblerremote/scribblers.dart';
 import 'package:scribblerremote/panels.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ScribblerRemoteApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ScribblerRemoteApp extends StatelessWidget {
+  const ScribblerRemoteApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,90 +31,73 @@ class ScribblerRemote extends StatefulWidget {
 
 class _ScribblerRemoteState extends State<ScribblerRemote> {
 
-  late ScribblerScanner _scribblerScanner;
-  late Scribbler _connectedScribbler;
   bool _scribblerIsFound = false;
   bool _scribblerIsConnected = false;
   final List<Scribbler> _scribblers = [];
-  late RCPanel myRCpanel;
-
-  void _doScan() {
-    print('scanning');
-    _scribblerIsFound = false;
-    _scribblerScanner = ScribblerScanner(foundScribbler, connected2Scribbler);
-    _scribblerScanner.scanForFirstScribbler();
-    _scribblerScanner.scanForScribblers(_scribblers);
-  }
+  late RCPanel _myRCpanel;
+  late ScribblerScanner _scribblerScanner;
+  late Scribbler _connectedScribbler;
 
   void foundScribbler() {
     print('called back - found scribbler');
+    for (var robot in _scribblers) {
+      print('${robot.name} @ ${robot.ip}');
+    }
     setState(() {
       _scribblerIsFound = true;
     });
   }
 
-  void connected2Scribbler() {
+  void connected2Scribbler(Scribbler scribbler) {
     print('called back - connected to scribbler');
     setState(() {
       _scribblerIsConnected = true;
+      _connectedScribbler = scribbler;
     });
   }
 
+  void _doScan() {
+    print('scanning');
+    if (_scribblerIsConnected) {
+      _connectedScribbler.disconnect();
+    }
+    _scribblers.clear();
+    setState(() {
+      _scribblerIsFound = false;
+      _scribblerIsConnected = false;
+    });
+    _scribblerScanner.scanForScribblers(_scribblers);
+  }
+
   void _beep() {
-    for (var robot in _scribblers) {
-      print('${robot.name} @ ${robot.ip}');
-    }
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.beep();
+    _connectedScribbler.beep();
   }
 
   void _forward() {
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.forward();
+    _connectedScribbler.forward();
   }
 
   void _reverse() {
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.reverse();
+    _connectedScribbler.reverse();
   }
 
   void _left() {
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.left();
+    _connectedScribbler.left();
   }
 
   void _right() {
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.right();
+    _connectedScribbler.right();
   }
 
   void _stop() {
-    if (_scribblerScanner.notConnected()) {
-      _scribblerScanner.openFirstFoundComms();
-      return;
-    }
-    _scribblerScanner.stop();
+    _connectedScribbler.stop();
   }
 
   @override
   void initState()  {
     super.initState();
-    myRCpanel = RCPanel(
+    _scribblerScanner = ScribblerScanner(foundScribbler);
+    _myRCpanel = RCPanel(
       _forward,
       _left,
       _right,
@@ -134,12 +117,15 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //myScannerPanel,
+            _scribblerIsConnected ? Text('connected to ${_connectedScribbler.name}') : const Text('not connected'),
             ScannerPanel(
                 doScan: _doScan,
-                isConnected: _scribblerIsConnected
             ),
-            myRCpanel,
+            (_scribblerIsFound && !_scribblerIsConnected) ? SelectPanel(
+              scribblers: _scribblers,
+              connected2Scribbler: connected2Scribbler,
+            ) : Container(),
+            _scribblerIsConnected ? _myRCpanel : Container(),
           ],
         ),
       ),

@@ -1,26 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:scribblerremote/scribblers.dart';
 
 class ScannerPanel extends StatelessWidget {
   final VoidCallback doScan;
-  final bool isConnected;
 
   const ScannerPanel({
     super.key,
-    required this.doScan,
-    required this.isConnected});
+    required this.doScan});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        isConnected ? const Text('connected') : const Text('not connected'),
-        FloatingActionButton(
+        FloatingActionButton.extended(
           onPressed: doScan,
           tooltip: 'Scan',
-          child: const Icon(Icons.search),
+          label: const Text('Search For Scribblers'),
         ),
       ],);
+  }
+}
+
+class SelectPanel extends StatelessWidget {
+  final List<Scribbler> scribblers;
+  final Function connected2Scribbler;
+
+  const SelectPanel({
+    super.key,
+    required this.scribblers,
+    required this.connected2Scribbler});
+
+  //TODO: make this a scrollable selectable menu
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => scribblers[0].openConnection(connected2Scribbler),
+      label: Text('Connect to ${scribblers[0].name}'),
+    );
   }
 }
 
