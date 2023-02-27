@@ -80,7 +80,6 @@ class SelectionMenuPanel extends StatelessWidget {
     }
 
     //TODO - center menu items, make scrollable,
-    // change hamburger buttons to text "Tap To Select Robot"
 
     return PopupMenuButton(
       onSelected: (value) {
@@ -90,6 +89,7 @@ class SelectionMenuPanel extends StatelessWidget {
       itemBuilder:  (BuildContext context) {
         return _menuItems;
       },
+      child: const Text('Tap To Select Robot'),
     );
   }
 }
