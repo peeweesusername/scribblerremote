@@ -1,34 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scribblerremote/scribblers.dart';
-
-class StatefulScannerPanel extends StatefulWidget {
-  final VoidCallback doScan;
-  final bool isConnected;
-  const StatefulScannerPanel({
-    super.key,
-    required this.doScan,
-    required this.isConnected});
-
-  @override
-  State<StatefulScannerPanel> createState() => _StatefulScannerPanel();
-}
-
-class _StatefulScannerPanel extends State<StatefulScannerPanel> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        widget.isConnected ? const Text('connected') : const Text('not connected'),
-        FloatingActionButton(
-          onPressed: widget.doScan,
-          tooltip: 'Scan',
-          child: const Icon(Icons.search),
-        ),
-      ],);
-  }
-}
 
 class ScannerPanel extends StatelessWidget {
   final VoidCallback doScan;
