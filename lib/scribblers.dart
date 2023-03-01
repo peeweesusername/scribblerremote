@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart' as netinfo;
