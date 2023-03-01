@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart' as netinfo;
 import 'package:network_tools/network_tools.dart';
-import 'package:scribblerremote/errordialogs.dart';
+import 'package:scribblerremote/notificationdialogs.dart';
 
 class Scribbler {
   late final String _name;
@@ -23,7 +23,7 @@ class Scribbler {
         connected(this);
       }
       catch (e) {
-        dialogCannotConnect(context, _name);
+        notificationCannotConnect(context, _name);
         _notConnected = true;
       }
     }

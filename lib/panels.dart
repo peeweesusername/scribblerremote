@@ -4,12 +4,14 @@ import 'package:scribblerremote/scribblers.dart';
 
 class StatusPanel extends StatelessWidget {
   final bool isConnected;
+  final bool isFound;
   final bool isScanning;
   final String scribblerName;
 
   const StatusPanel({
     super.key,
     required this.isConnected,
+    required this.isFound,
     required this.isScanning,
     required this.scribblerName});
 
@@ -18,8 +20,14 @@ class StatusPanel extends StatelessWidget {
     if (isScanning){
       return const Text('Scanning...');
     }
+    else if (isConnected) {
+      return Text('Connected To $scribblerName');// : const Text('Not Connected');
+    }
+    else if (isFound) {
+      return const Text('Scribblers Found');
+    }
     else {
-      return isConnected ? Text('Connected To $scribblerName') : const Text('Not Connected');
+      return const Text('No Scribblers Found');
     }
   }
 }

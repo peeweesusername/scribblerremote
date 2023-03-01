@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scribblerremote/scribblers.dart';
 import 'package:scribblerremote/panels.dart';
+import 'package:scribblerremote/notificationdialogs.dart';
 
 void main() {
   runApp(const ScribblerRemoteApp());
@@ -53,6 +54,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
   }
 
   void _scanningDone() {
+    notificationScanComplete(context);
     setState(() {
       _scanningForScribblers = false;
     });
@@ -123,6 +125,7 @@ class _ScribblerRemoteState extends State<ScribblerRemote> {
           children: <Widget>[
             StatusPanel(
                 isConnected: _scribblerIsConnected,
+                isFound: _scribblerIsFound,
                 isScanning: _scanningForScribblers,
                 scribblerName: _connectedScribbler.name),
             ScannerPanel(
