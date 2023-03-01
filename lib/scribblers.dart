@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart' as netinfo;
 import 'package:network_tools/network_tools.dart';
+import 'package:scribblerremote/errordialogs.dart';
 
 class Scribbler {
   late final String _name;
@@ -14,11 +16,17 @@ class Scribbler {
   late Socket _tcpSocket;
   bool _notConnected = true;
 
-  Future<void> openConnection (Function connected) async {
+  Future<void> openConnection (Function connected, BuildContext context) async {
     if (_notConnected) {
-      _tcpSocket = await Socket.connect(_ipAddress, 23);
-      _notConnected = false;
-      connected(this);
+      try {
+        _tcpSocket = await Socket.connect(_ipAddress, 23);
+        _notConnected = false;
+        connected(this);
+      }
+      catch (e) {
+        dialogCannotConnect(context, _name);
+        _notConnected = true;
+      }
     }
   }
 
@@ -109,21 +117,37 @@ class ScribblerScanner {
         //Uncomment to test scrollable selection menu
         /*
         scribblers.add(Scribbler('fake 1', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 2', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 3', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 4', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 5', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 7', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 8', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 9', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 10', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 11', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 13', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 14', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 15', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 16', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 17', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 18', '127.0.0.1'));
+        foundScribbler();
         scribblers.add(Scribbler('fake 19', '127.0.0.1'));
         */
         foundScribbler();

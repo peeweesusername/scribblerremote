@@ -80,7 +80,7 @@ class SelectionMenuPanel extends StatelessWidget {
 
     return PopupMenuButton(
       onSelected: (value) {
-        scribblers[value].openConnection(connected2Scribbler);
+        scribblers[value].openConnection(connected2Scribbler, context);
       },
       itemBuilder:  (BuildContext context) {
         return _menuItems;
